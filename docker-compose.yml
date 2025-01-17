@@ -8,7 +8,7 @@ services:
         build:
             dockerfile: php-files/php-dockerfile
         volumes:
-            - './html:/var/www/html'
+            - ${HTML}:/var/www/html
         depends_on:
             - mariadb
 
@@ -20,8 +20,8 @@ services:
         links:
             - 'php'
         volumes:
-            - './html:/var/www/html'
-            - './nginx-conf:/etc/nginx/conf.d'
+            - ${HTML}:/var/www/html
+            - ${NGX_CONF}:/etc/nginx/conf.d
         depends_on:
             - php
 
@@ -29,7 +29,7 @@ services:
     mariadb:
         image: mariadb:11.6
         environment:
-            MYSQL_ROOT_PASSWORD: your_password
+            MYSQL_ROOT_PASSWORD: /run/secrets/db_root_password
         volumes:
             - mysqldata:/var/lib/mysql
 
@@ -47,3 +47,9 @@ services:
 volumes:
 
   mysqldata:
+
+
+secrets:
+   db_root_password:
+     file: db_root_password.txt
+    
